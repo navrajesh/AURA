@@ -16,7 +16,9 @@
     "db:generate": "pnpm --filter=@aura/db generate",
     "db:push": "pnpm --filter=@aura/db push",
     "db:migrate": "pnpm --filter=@aura/db migrate",
+    "db:setup-roles": "pnpm --filter=@aura/db setup-roles",
     "db:seed": "pnpm --filter=@aura/db seed",
+    "db:verify-rls": "pnpm --filter=@aura/db verify-rls",
     "db:studio": "pnpm --filter=@aura/db studio"
   },
   "devDependencies": {

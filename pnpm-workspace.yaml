@@ -1,3 +1,7 @@
 packages:
   - "apps/*"
   - "packages/*"
+
+# pnpm v11 requires explicit per-package build approval.
+allowBuilds:
+  esbuild: true
