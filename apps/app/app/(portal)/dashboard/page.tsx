@@ -1,80 +1,147 @@
 import { currentUser } from '@clerk/nextjs/server';
 
-import { requireCurrentContext, TenantNotReadyError } from '@/lib/tenant';
+import { IconArrowUp, IconExternalNoop } from './_widgets';
+import { Sparkline } from '@/components/portal/Sparkline';
 
 export default async function DashboardPage() {
   const user = await currentUser();
+  const greeting = user?.firstName ?? user?.username ?? 'there';
 
-  let tenantBlock: React.ReactNode;
-  try {
-    const ctx = await requireCurrentContext();
-    tenantBlock = (
-      <div style={card}>
-        <div style={cardLabel}>Tenant</div>
-        <div style={cardValue}>{ctx.tenantName}</div>
-        <div style={cardMeta}>
-          tenant_id: <code>{ctx.tenantId}</code>
-        </div>
-        <div style={cardMeta}>
-          clerk_org_id: <code>{ctx.orgId}</code>
-        </div>
-      </div>
-    );
-  } catch (err) {
-    if (err instanceof TenantNotReadyError) {
-      tenantBlock = (
-        <div style={{ ...card, borderColor: '#e8c7a5', background: '#fff8f0' }}>
-          <div style={cardLabel}>Tenant setup pending</div>
-          <p style={{ marginTop: 4, fontSize: 13 }}>
-            The Clerk webhook hasn&apos;t provisioned this organization yet. Refresh in a few seconds.
-          </p>
-        </div>
-      );
-    } else {
-      throw err;
-    }
-  }
+  // Static placeholder data — gets replaced with real queries in v1.x.
+  const kpis = [
+    { label: 'Active patients', value: '0', trend: '—', spark: [1, 1, 1, 1, 1] },
+    { label: 'Messages sent (7d)', value: '0', trend: '—', spark: [1, 1, 1, 1, 1] },
+    { label: 'Reply rate', value: '—', trend: '—', spark: [1, 1, 1, 1, 1] },
+    { label: 'Conversions (30d)', value: '0', trend: '—', spark: [1, 1, 1, 1, 1] },
+  ];
+
+  const funnel = [
+    { label: 'Enrolled', n: 0, pct: 100 },
+    { label: 'Day 1 sent', n: 0, pct: 0 },
+    { label: 'Day 7 sent', n: 0, pct: 0 },
+    { label: 'Replied', n: 0, pct: 0 },
+    { label: 'Booked', n: 0, pct: 0 },
+    { label: 'Converted', n: 0, pct: 0 },
+  ];
 
   return (
-    <div>
-      <h1 style={{ fontSize: 22, marginBottom: 4 }}>
-        Hello, {user?.firstName ?? user?.username ?? 'there'}
-      </h1>
-      <p style={{ color: '#666', marginBottom: 24 }}>
-        Phase 2 placeholder. The full dashboard ships in Phase 3.
-      </p>
+    <>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Hello, {greeting}</h1>
+          <p className="page-sub">
+            Real metrics arrive once your first CSV imports and SMS sends go live.
+          </p>
+        </div>
+        <div className="page-actions">
+          <button className="btn" type="button">
+            Last 30 days
+          </button>
+          <button className="btn btn-primary" type="button">
+            New campaign
+          </button>
+        </div>
+      </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16, maxWidth: 720 }}>
-        {tenantBlock}
-        <div style={card}>
-          <div style={cardLabel}>User</div>
-          <div style={cardValue}>{user?.fullName ?? user?.emailAddresses?.[0]?.emailAddress}</div>
-          <div style={cardMeta}>
-            clerk_user_id: <code>{user?.id}</code>
+      <div className="kpi-grid">
+        {kpis.map((k) => (
+          <div className="kpi" key={k.label}>
+            <div className="kpi-label">
+              <span>{k.label}</span>
+            </div>
+            <div className="kpi-value">{k.value}</div>
+            <div className="kpi-meta">
+              <span className="kpi-trend">{k.trend}</span>
+              <span>vs last period</span>
+            </div>
+            <div className="kpi-spark">
+              <Sparkline data={k.spark} color="var(--muted-2)" />
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div className="split">
+        <div className="card">
+          <div className="card-header">
+            <div className="card-title">Reactivation funnel</div>
+            <button className="btn btn-ghost btn-sm" type="button">
+              View all
+            </button>
+          </div>
+          <div className="card-body">
+            {funnel.map((f) => (
+              <div className="funnel-row" key={f.label}>
+                <div className="funnel-label">{f.label}</div>
+                <div className="funnel-bar">
+                  <div
+                    className="funnel-bar-fill"
+                    style={{
+                      width: `${Math.max(f.pct, 2)}%`,
+                      background: 'var(--accent)',
+                    }}
+                  />
+                </div>
+                <div className="funnel-num">{f.n}</div>
+                <div className="funnel-pct">{f.pct}%</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="card">
+          <div className="card-header">
+            <div className="card-title">Workflow health</div>
+            <span className="chip success">
+              <span className="chip-dot" />
+              All systems go
+            </span>
+          </div>
+          <div className="card-body">
+            <div className="col" style={{ gap: 12 }}>
+              <HealthRow label="Twilio SMS" status="Connected" tone="success" />
+              <HealthRow label="Email channel" status="Not configured (v2)" tone="muted" />
+              <HealthRow label="CRM sync" status="CSV upload only" tone="muted" />
+              <HealthRow label="Sequence engine" status="Awaiting Inngest wiring" tone="warning" />
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+      <div className="card" style={{ marginTop: 16 }}>
+        <div className="card-header">
+          <div className="card-title">Recent activity</div>
+          <button className="btn btn-ghost btn-sm" type="button">
+            <IconExternalNoop /> Open activity log
+          </button>
+        </div>
+        <div className="empty">
+          <IconArrowUp />
+          <div className="empty-title">No activity yet</div>
+          <div>Upload a CSV from the Patients tab to start a reactivation sequence.</div>
+        </div>
+      </div>
+    </>
   );
 }
 
-const card: React.CSSProperties = {
-  background: '#fff',
-  border: '1px solid #e5e5e0',
-  borderRadius: 10,
-  padding: 16,
-};
-const cardLabel: React.CSSProperties = {
-  fontSize: 12,
-  textTransform: 'uppercase',
-  letterSpacing: 0.6,
-  color: '#888',
-  marginBottom: 6,
-};
-const cardValue: React.CSSProperties = { fontSize: 16, fontWeight: 500, marginBottom: 8 };
-const cardMeta: React.CSSProperties = {
-  fontSize: 11,
-  color: '#666',
-  fontFamily: 'ui-monospace, SFMono-Regular, Menlo, monospace',
-  marginTop: 2,
-};
+function HealthRow({
+  label,
+  status,
+  tone,
+}: {
+  label: string;
+  status: string;
+  tone: 'success' | 'warning' | 'muted';
+}) {
+  const cls = tone === 'success' ? 'success' : tone === 'warning' ? 'warning' : '';
+  return (
+    <div className="row" style={{ justifyContent: 'space-between', fontSize: 13 }}>
+      <span style={{ color: 'var(--text-2)' }}>{label}</span>
+      <span className={`chip ${cls}`}>
+        <span className="chip-dot" />
+        {status}
+      </span>
+    </div>
+  );
+}
