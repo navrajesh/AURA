@@ -3,10 +3,27 @@
   "version": "0.0.0",
   "private": true,
   "description": "AURA customer portal — Patient Reactivation OS",
+  "type": "module",
   "scripts": {
-    "dev": "echo 'Scaffold in Phase 2'",
-    "build": "echo 'Scaffold in Phase 2'",
-    "lint": "echo 'Scaffold in Phase 2'",
-    "typecheck": "echo 'Scaffold in Phase 2'"
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@aura/db": "workspace:*",
+    "@clerk/nextjs": "^7.3.4",
+    "drizzle-orm": "^0.45.2",
+    "next": "^15.5.6",
+    "postgres": "^3.4.9",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "svix": "^1.45.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.10",
+    "@types/react-dom": "^19.1.4",
+    "typescript": "^5.7.3"
   }
 }

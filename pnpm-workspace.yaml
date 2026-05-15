@@ -4,4 +4,6 @@ packages:
 
 # pnpm v11 requires explicit per-package build approval.
 allowBuilds:
+  '@clerk/shared': true
   esbuild: true
+  sharp: true
