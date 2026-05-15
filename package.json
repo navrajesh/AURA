@@ -1,0 +1,27 @@
+{
+  "name": "aura",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AURA Patient Reactivation OS — monorepo",
+  "packageManager": "pnpm@11.1.2",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "pnpm -r --filter=./apps/* build",
+    "dev:app": "pnpm --filter=@aura/app dev",
+    "dev:admin": "pnpm --filter=@aura/admin dev",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
+    "db:generate": "pnpm --filter=@aura/db generate",
+    "db:push": "pnpm --filter=@aura/db push",
+    "db:migrate": "pnpm --filter=@aura/db migrate",
+    "db:seed": "pnpm --filter=@aura/db seed",
+    "db:studio": "pnpm --filter=@aura/db studio"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.5",
+    "prettier": "^3.4.2",
+    "typescript": "^5.7.3"
+  }
+}

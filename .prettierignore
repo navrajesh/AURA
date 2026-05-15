@@ -1,0 +1,9 @@
+node_modules/
+.next/
+dist/
+build/
+out/
+design/
+drizzle/
+*.lock
+pnpm-lock.yaml

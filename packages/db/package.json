@@ -1,0 +1,15 @@
+{
+  "name": "@aura/db",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared Drizzle schema and tenant-scoped DB helpers for AURA",
+  "scripts": {
+    "lint": "echo 'Scaffold in Phase 1'",
+    "typecheck": "echo 'Scaffold in Phase 1'",
+    "generate": "echo 'Scaffold in Phase 1'",
+    "push": "echo 'Scaffold in Phase 1'",
+    "migrate": "echo 'Scaffold in Phase 1'",
+    "seed": "echo 'Scaffold in Phase 1'",
+    "studio": "echo 'Scaffold in Phase 1'"
+  }
+}

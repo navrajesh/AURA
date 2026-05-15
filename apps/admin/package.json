@@ -1,0 +1,12 @@
+{
+  "name": "@aura/admin",
+  "version": "0.0.0",
+  "private": true,
+  "description": "AURA super admin portal",
+  "scripts": {
+    "dev": "echo 'Scaffold in Phase 6'",
+    "build": "echo 'Scaffold in Phase 6'",
+    "lint": "echo 'Scaffold in Phase 6'",
+    "typecheck": "echo 'Scaffold in Phase 6'"
+  }
+}
