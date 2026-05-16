@@ -15,6 +15,7 @@
     "@aura/db": "workspace:*",
     "@clerk/nextjs": "^7.3.4",
     "drizzle-orm": "^0.45.2",
+    "inngest": "^4.4.0",
     "libphonenumber-js": "^1.13.1",
     "next": "^15.5.6",
     "papaparse": "^5.5.3",
