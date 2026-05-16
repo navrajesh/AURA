@@ -2,6 +2,7 @@ import { desc } from 'drizzle-orm';
 
 import { patients, withTenant } from '@aura/db';
 
+import { UploadCsvButton } from '@/components/patients/UploadCsvButton';
 import { StatusChip } from '@/components/portal/StatusChip';
 import { TrackChip } from '@/components/portal/TrackChip';
 import { db } from '@/lib/db';
@@ -43,9 +44,7 @@ export default async function PatientsPage() {
           <button className="btn" type="button" disabled>
             Export
           </button>
-          <button className="btn btn-primary" type="button" disabled>
-            Upload CSV
-          </button>
+          <UploadCsvButton />
         </div>
       </div>
 

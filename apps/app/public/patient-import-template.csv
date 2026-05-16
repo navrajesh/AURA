@@ -1,0 +1,4 @@
+patient_id,first_name,last_name,phone,email,last_visit_date,last_service,notes
+EX-1001,Alice,Adams,(415) 555-0101,alice@example.com,2025-09-12,Botox,VIP
+EX-1002,Brandon,Brooks,415-555-0102,brandon@example.com,2025-10-03,Microneedling,
+,Cara,Chen,4155550103,cara@example.com,8/20/2025,Filler,Returning
