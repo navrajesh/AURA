@@ -1,0 +1,13 @@
+node_modules/
+.next/
+out/
+.env
+.env.local
+.env.*.local
+*.tsbuildinfo
+next-env.d.ts
+.turbo/
+.vercel/
+
+# clerk configuration (can include secrets)
+/.clerk/
