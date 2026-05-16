@@ -20,7 +20,8 @@
     "studio": "drizzle-kit studio",
     "setup-roles": "tsx scripts/setup-roles.ts",
     "seed": "tsx scripts/seed-dev.ts",
-    "verify-rls": "tsx scripts/verify-rls.ts"
+    "verify-rls": "tsx scripts/verify-rls.ts",
+    "assign-twilio": "tsx scripts/assign-twilio-number.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.45.2",

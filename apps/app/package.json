@@ -21,7 +21,8 @@
     "postgres": "^3.4.9",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "svix": "^1.45.0"
+    "svix": "^1.45.0",
+    "twilio": "^6.0.2"
   },
   "devDependencies": {
     "@types/papaparse": "^5.5.2",

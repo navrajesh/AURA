@@ -31,3 +31,15 @@ export const env = {
 export function getOwnerDatabaseUrl(): string {
   return requireUrl('DATABASE_OWNER_URL');
 }
+
+export function getTwilioConfig() {
+  const sid = process.env.TWILIO_ACCOUNT_SID;
+  const token = process.env.TWILIO_AUTH_TOKEN;
+  const publicUrl = process.env.PUBLIC_URL;
+  return {
+    accountSid: sid,
+    authToken: token,
+    publicUrl,
+    configured: Boolean(sid && token && publicUrl),
+  };
+}
