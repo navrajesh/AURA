@@ -36,8 +36,8 @@ See [docs/ACCEPTANCE.md](docs/ACCEPTANCE.md) for the spec-§11 checklist.
 
 ## Prerequisites
 
-- **Node 20+** (LTS recommended)
-- **pnpm 11+** — `npm install -g pnpm`
+- **Node 22.13+ / 24 recommended** — use nvm: `nvm install 24 && nvm alias default 24`
+- **pnpm 11+** — `corepack enable && corepack prepare pnpm@11 --activate` (preferred over npm install -g)
 - **git**
 - **ngrok** (only needed for Clerk webhook + Twilio webhook tests) — `winget install ngrok.ngrok`, then `ngrok config add-authtoken <token>`
 
@@ -50,63 +50,84 @@ External services (one-time setup, see the handover doc for click-by-click):
 
 ---
 
-## First-time setup
+## First-time: new machine setup
 
-```powershell
+Run these steps once on each machine that joins the project.
+
+```bash
 # 1. Install workspace deps
 pnpm install
 
-# 2. Configure packages/db with the Neon owner URL
-cd packages/db
-copy .env.example .env
-# edit .env: set NEON_OWNER_URL
-cd ..\..
+# 2. Configure the DB package with the Neon owner URL
+cp packages/db/.env.example packages/db/.env
+# edit packages/db/.env — set NEON_OWNER_URL to the Neon owner connection string
 
-# 3. Push schema, create the two limited roles, apply RLS, seed dev tenants
-pnpm db:push
-pnpm db:setup-roles      # prints APP_USER_URL and APP_ADMIN_URL — save these
-pnpm db:seed
-pnpm db:verify-rls       # expect 5/5 checks pass
-
-# 4. Configure apps/app/.env.local
-cd apps/app
-copy .env.example .env.local
-# edit .env.local with:
-#   DATABASE_URL          = APP_USER_URL from step 3
+# 3. Configure apps/app/.env.local
+cp apps/app/.env.example apps/app/.env.local
+# edit apps/app/.env.local with:
+#   DATABASE_URL          = APP_USER_URL  (from the DB setup below, or ask a teammate)
 #   DATABASE_OWNER_URL    = NEON_OWNER_URL
-#   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY / CLERK_SECRET_KEY  (AURA Customer)
-#   CLERK_WEBHOOK_SECRET   (filled in after ngrok step below)
-#   TWILIO_*               (when partner credentials arrive)
-cd ..\..
+#   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY / CLERK_SECRET_KEY  (AURA Customer app)
+#   CLERK_WEBHOOK_SECRET  (from Clerk dashboard → Webhooks — filled in after ngrok step)
+#   TWILIO_*              (when partner credentials arrive)
 
-# 5. Configure apps/admin/.env.local
-cd apps/admin
-copy .env.example .env.local
-# edit .env.local with:
-#   DATABASE_URL          = APP_ADMIN_URL from step 3
-#   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY / CLERK_SECRET_KEY  (AURA Admin)
-cd ..\..
+# 4. Configure apps/admin/.env.local
+cp apps/admin/.env.example apps/admin/.env.local
+# edit apps/admin/.env.local with:
+#   DATABASE_URL          = APP_ADMIN_URL  (from the DB setup below, or ask a teammate)
+#   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY / CLERK_SECRET_KEY  (AURA Admin app)
 ```
 
 ---
 
-## Day-to-day commands
+## First-time: database setup (run ONCE — first machine only)
 
-```powershell
-# Customer app on http://localhost:3000
+The schema, roles, RLS policies, and seed data live in Neon and are shared across all
+machines. Run this block once when the project is first created. Skip it on every
+subsequent machine — it is a no-op at best and destructive (`db:seed`) at worst.
+
+```bash
+pnpm db:push                # push Drizzle schema to Neon
+pnpm db:setup-roles         # creates app_user + app_admin roles; prints APP_USER_URL and APP_ADMIN_URL — save these
+pnpm db:seed                # inserts dev tenant seed data
+pnpm db:verify-rls          # expect 5/5 checks pass
+```
+
+Copy the printed `APP_USER_URL` and `APP_ADMIN_URL` into the `.env.local` files above.
+
+---
+
+## Launching the sites
+
+Open two terminal tabs from the repo root. That's all that's needed for every dev session.
+
+```bash
+# Terminal 1 — customer portal: http://localhost:3000
 pnpm dev:app
 
-# Admin app on http://localhost:3001
+# Terminal 2 — admin portal: http://localhost:3001
 pnpm dev:admin
+```
 
-# Schema changes: edit packages/db/src/schema.ts, then:
+> **Mac / nvm users:** if `node --version` shows anything below v22, run `nvm use 24` first.
+> New terminals default to Node 24 automatically once `nvm alias default 24` is set.
+
+For Clerk org creation or Twilio SMS testing, a third terminal running ngrok is also required
+(see the [Clerk webhook](#clerk-webhook-one-time-per-dev-tunnel) section below).
+
+---
+
+## Other dev commands
+
+```bash
+# Schema changes — edit packages/db/src/schema.ts, then:
 pnpm db:generate         # emit a new migration .sql
 pnpm db:push             # apply to Neon
 
-# Inspect data:
+# Inspect data in a browser UI:
 pnpm db:studio
 
-# Typecheck everything:
+# Typecheck all packages:
 pnpm typecheck
 ```
 
