@@ -6,17 +6,19 @@ import { env } from './env';
 
 /**
  * Process-singleton Drizzle client bound to the customer-app role (app_user).
- * Reusing one client across requests avoids exhausting Neon's connection
- * pool on hot reload or warm serverless invocations.
+ * Lazy-initialised so env vars are not accessed at module load time (which
+ * would break Next.js build-time page data collection).
  */
 declare global {
   // eslint-disable-next-line no-var
   var __aura_db: Database | undefined;
 }
 
-export const db: Database = globalThis.__aura_db ?? createDb(env.DATABASE_URL);
-if (process.env.NODE_ENV !== 'production') {
-  globalThis.__aura_db = db;
+export function getDb(): Database {
+  if (!globalThis.__aura_db) {
+    globalThis.__aura_db = createDb(env.DATABASE_URL);
+  }
+  return globalThis.__aura_db;
 }
 
 export { withTenant } from '@aura/db';

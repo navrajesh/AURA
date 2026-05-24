@@ -16,7 +16,7 @@ import {
   type Patient,
 } from '@aura/db';
 
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 import { emitInbox } from '@/lib/realtime/bus';
 import { detectIntent } from '@/lib/twilio/intent';
 import { getTwilioClient } from '@/lib/twilio/client';
@@ -41,7 +41,7 @@ export async function sendSms(args: {
   conversationId: string;
   body: string;
 }): Promise<Message> {
-  return await withTenant(db, args.tenantId, async (tx) => {
+  return await withTenant(getDb(), args.tenantId, async (tx) => {
     const tenantRow = (
       await tx.select().from(tenants).where(eq(tenants.id, args.tenantId)).limit(1)
     )[0];
@@ -173,7 +173,7 @@ export async function recordInbound(args: {
   isNew: boolean;
   intent: ReturnType<typeof detectIntent>;
 }> {
-  return await withTenant(db, args.tenantId, async (tx) => {
+  return await withTenant(getDb(), args.tenantId, async (tx) => {
     // Idempotency: did we already record this SID?
     const existing = (
       await tx.select().from(messages).where(eq(messages.twilioSid, args.twilioSid)).limit(1)
@@ -344,7 +344,7 @@ export async function applyStatusUpdate(args: {
 }): Promise<void> {
   const mapped = mapTwilioStatus(args.status);
   if (!mapped) return;
-  await withTenant(db, args.tenantId, async (tx) => {
+  await withTenant(getDb(), args.tenantId, async (tx) => {
     const rows = await tx
       .update(messages)
       .set({

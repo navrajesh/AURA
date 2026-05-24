@@ -11,7 +11,7 @@ import {
   type Patient,
 } from '@aura/db';
 
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 
 export type ConversationListItem = {
   id: string;
@@ -28,7 +28,7 @@ export type ConversationListItem = {
 };
 
 export async function listConversations(tenantId: string): Promise<ConversationListItem[]> {
-  return await withTenant(db, tenantId, async (tx) => {
+  return await withTenant(getDb(), tenantId, async (tx) => {
     const rows = await tx
       .select({
         id: conversations.id,
@@ -69,7 +69,7 @@ export async function getThread(
   tenantId: string,
   conversationId: string,
 ): Promise<ThreadView | null> {
-  return await withTenant(db, tenantId, async (tx) => {
+  return await withTenant(getDb(), tenantId, async (tx) => {
     const convo = (
       await tx
         .select({
@@ -109,7 +109,7 @@ export async function getThread(
 }
 
 export async function markConversationRead(tenantId: string, conversationId: string) {
-  await withTenant(db, tenantId, async (tx) => {
+  await withTenant(getDb(), tenantId, async (tx) => {
     await tx
       .update(conversations)
       .set({ unreadCount: 0 })

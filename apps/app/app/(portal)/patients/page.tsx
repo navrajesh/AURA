@@ -5,7 +5,7 @@ import { patients, withTenant } from '@aura/db';
 import { UploadCsvButton } from '@/components/patients/UploadCsvButton';
 import { StatusChip } from '@/components/portal/StatusChip';
 import { TrackChip } from '@/components/portal/TrackChip';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 import { requireCurrentContext, TenantNotReadyError } from '@/lib/tenant';
 
 export const dynamic = 'force-dynamic';
@@ -15,7 +15,7 @@ export default async function PatientsPage() {
   let pending = false;
   try {
     const ctx = await requireCurrentContext();
-    rows = await withTenant(db, ctx.tenantId, (tx) =>
+    rows = await withTenant(getDb(), ctx.tenantId, (tx) =>
       tx
         .select()
         .from(patients)

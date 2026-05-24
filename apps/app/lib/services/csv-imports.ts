@@ -12,7 +12,7 @@ import {
 } from '@aura/db';
 
 import { parseCsv, requiredColumnsPresent, type RowError } from '@/lib/csv/parse';
-import { db } from '@/lib/db';
+import { getDb } from '@/lib/db';
 
 export type ImportSummary = {
   importId: string;
@@ -55,7 +55,7 @@ export async function importCsvForTenant(args: {
     throw new ImportError(413, `File too large (${args.csvBytes} bytes; max ${MAX_BYTES})`);
   }
 
-  return await withTenant(db, args.tenantId, async (tx) => {
+  return await withTenant(getDb(), args.tenantId, async (tx) => {
     // Resolve uploader user id (RLS lets us see our own row).
     const userRows = await tx
       .select({ id: users.id })
