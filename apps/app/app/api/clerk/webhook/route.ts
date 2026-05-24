@@ -49,21 +49,21 @@ type ClerkEvent =
   | { type: 'user.created'; data: ClerkUser }
   | { type: string; data: unknown };
 
-const ownerUrl =
-  process.env.DATABASE_OWNER_URL ??
-  // Allow falling back to DATABASE_URL only if it's the owner role — dev convenience.
-  '';
+let _ownerDb: ReturnType<typeof createDb> | null = null;
 
-if (!ownerUrl) {
-  throw new Error(
-    'Clerk webhook requires DATABASE_OWNER_URL (Neon owner connection string). ' +
-      'Add it to apps/app/.env.local.',
-  );
+function getOwnerDb() {
+  if (!_ownerDb) {
+    const ownerUrl = process.env.DATABASE_OWNER_URL ?? '';
+    if (!ownerUrl) {
+      throw new Error(
+        'Clerk webhook requires DATABASE_OWNER_URL (Neon owner connection string). ' +
+          'Add it to apps/app/.env.local.',
+      );
+    }
+    _ownerDb = createDb(ownerUrl);
+  }
+  return _ownerDb;
 }
-
-// Webhook handler runs with full DB privileges; uses its own client so it
-// doesn't share the app_user pool.
-const ownerDb = createDb(ownerUrl);
 
 export async function POST(req: Request) {
   const hdrs = await headers();
@@ -114,7 +114,7 @@ export async function POST(req: Request) {
 
 async function handleOrg(org: ClerkOrg) {
   // Idempotent upsert — re-running on org.updated is fine.
-  const existing = await ownerDb
+  const existing = await getOwnerDb()
     .select({ id: tenants.id })
     .from(tenants)
     .where(eq(tenants.clerkOrgId, org.id))
@@ -123,13 +123,13 @@ async function handleOrg(org: ClerkOrg) {
   let tenantId: string;
   if (existing[0]) {
     tenantId = existing[0].id;
-    await ownerDb
+    await getOwnerDb()
       .update(tenants)
       .set({ name: org.name, updatedAt: new Date() })
       .where(eq(tenants.id, tenantId));
   } else {
     const row: NewTenant = { clerkOrgId: org.id, name: org.name };
-    const inserted = await ownerDb
+    const inserted = await getOwnerDb()
       .insert(tenants)
       .values(row)
       .returning({ id: tenants.id });
@@ -185,7 +185,7 @@ async function handleMembership(m: ClerkMembership) {
     role: m.role === 'org:admin' ? 'owner' : 'operator',
   };
 
-  await ownerDb
+  await getOwnerDb()
     .insert(users)
     .values(row)
     .onConflictDoUpdate({
