@@ -24,8 +24,8 @@ function requireUrl(name: string): string {
 }
 
 export const env = {
-  DATABASE_URL: requireUrl('DATABASE_URL'),
-  CLERK_WEBHOOK_SECRET: required('CLERK_WEBHOOK_SECRET'),
+  get DATABASE_URL() { return requireUrl('DATABASE_URL'); },
+  get CLERK_WEBHOOK_SECRET() { return required('CLERK_WEBHOOK_SECRET'); },
 };
 
 export function getOwnerDatabaseUrl(): string {
