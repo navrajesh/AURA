@@ -4,7 +4,10 @@ Entity-relationship diagram for the v1 schema. All eight tables, every foreign k
 
 This maps 1:1 to `lib/db/schema.ts` — each entity is a Drizzle `pgTable`, each `FK` is a `.references()`, and each `UK` is a unique or partial-unique index. The per-tenant uniqueness markers (`patients.phone`, `patients.external_patient_id`, `conversations.patient_id`) are **partial** indexes — unique only where the value is non-null.
 
+> The `%%{init}%%` line at the top of the diagram below sets the font size to 18px so column names are easy to read. GitHub and recent VS Code mermaid extensions both honor it. To adjust, change `fontSize` — e.g. `'16px'` for slightly smaller, `'20px'` for larger.
+
 ```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'18px'}}}%%
 erDiagram
   TENANTS ||--o{ USERS : "has"
   TENANTS ||--o{ PATIENTS : "has"
@@ -136,3 +139,8 @@ This file renders as a diagram automatically on:
 - **Most static-site generators** (MkDocs Material, Docusaurus, etc.) — mermaid is built in or a one-line plugin.
 
 If a viewer doesn't support mermaid, the diagram falls back to a readable fenced code block.
+
+## Adjusting readability
+
+- **Font size** — change `fontSize` in the `%%{init}%%` line at the top of the diagram. Mermaid applies one size to the whole diagram; it does not support bolding or sizing column names independently of their types.
+- **If you need true per-element styling** (bold column names, larger headers) — render the diagram to a static `.svg` once and edit its CSS. The trade-off is that it stops being a live, editable mermaid block, so do this only once the schema is frozen.
