@@ -21,5 +21,5 @@ function requireUrl(name: string): string {
 }
 
 export const env = {
-  DATABASE_URL: requireUrl('DATABASE_URL'),
+  get DATABASE_URL() { return requireUrl('DATABASE_URL'); },
 };

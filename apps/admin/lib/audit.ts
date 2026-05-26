@@ -13,7 +13,8 @@ export type AuditAction =
   | 'view_audit_log'
   | 'impersonate_start'
   | 'impersonate_end'
-  | 'export';
+  | 'export'
+  | 'delete_tenant';
 
 export type AuditOptions = {
   action: AuditAction;

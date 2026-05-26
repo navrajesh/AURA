@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { csvImports, db, messages, patients, tenants } from '@/lib/db';
 import { logAdminAction } from '@/lib/audit';
+import { DeleteTenantButton } from './DeleteTenantButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,9 +49,12 @@ export default async function TenantDetailPage({
           <div className="page-title">{tenant.name}</div>
           <div className="page-sub mono">{tenant.clerkOrgId}</div>
         </div>
-        <span className={`chip ${tenant.status === 'active' ? 'success' : 'danger'}`}>
-          {tenant.status}
-        </span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+          <span className={`chip ${tenant.status === 'active' ? 'success' : 'danger'}`}>
+            {tenant.status}
+          </span>
+          <DeleteTenantButton tenantId={tenant.id} tenantName={tenant.name} />
+        </div>
       </div>
 
       <div className="kpi-grid">
