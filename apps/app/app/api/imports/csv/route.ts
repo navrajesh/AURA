@@ -12,8 +12,9 @@ export async function POST(req: Request) {
   let ctx;
   try {
     ctx = await requireCurrentContext();
-  } catch {
-    return new NextResponse('Unauthorized', { status: 401 });
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : 'Unauthorized';
+    return NextResponse.json({ error: msg }, { status: 401 });
   }
 
   const formData = await req.formData();
