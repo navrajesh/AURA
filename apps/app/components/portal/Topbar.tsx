@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 
 import { IconBell, IconSearch, IconZap } from './Icons';
+import { ThemeToggle } from './ThemeToggle';
 
 const labels: Record<string, string> = {
   '/dashboard': 'Overview',
@@ -43,6 +44,7 @@ export function Topbar({ tenantShort, tenantName }: { tenantShort: string; tenan
           <IconBell size={14} />
           <span className="dot" />
         </button>
+        <ThemeToggle />
         <div style={{ height: 24, width: 1, background: 'var(--border)' }} />
         <span className="chip success" style={{ padding: '3px 8px' }}>
           <span className="chip-dot" />

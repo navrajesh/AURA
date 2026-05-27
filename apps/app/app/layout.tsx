@@ -26,7 +26,14 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <html lang="en" className={`${geist.variable} ${geistMono.variable}`}>
+      <html lang="en" className={`${geist.variable} ${geistMono.variable}`} suppressHydrationWarning>
+        <head>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `(function(){var t=localStorage.getItem('aura-theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.dataset.theme='dark'}})()`,
+            }}
+          />
+        </head>
         <body>{children}</body>
       </html>
     </ClerkProvider>
