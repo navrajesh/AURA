@@ -137,7 +137,7 @@ export function PatientsTable({ rows }: { rows: Patient[] }) {
                       <input
                         type="checkbox"
                         checked={selected.has(p.id)}
-                        onChange={() => toggleOne(p.id)}
+                        readOnly
                         aria-label={`Select ${fullName(p)}`}
                       />
                     </td>
