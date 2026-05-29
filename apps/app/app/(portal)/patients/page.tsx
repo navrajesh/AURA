@@ -2,9 +2,8 @@ import { desc } from 'drizzle-orm';
 
 import { patients, withTenant } from '@aura/db';
 
+import { AddPatientButton, PatientsTable } from '@/components/patients/PatientsTable';
 import { UploadCsvButton } from '@/components/patients/UploadCsvButton';
-import { StatusChip } from '@/components/portal/StatusChip';
-import { TrackChip } from '@/components/portal/TrackChip';
 import { getDb } from '@/lib/db';
 import { requireCurrentContext, TenantNotReadyError } from '@/lib/tenant';
 
@@ -37,7 +36,7 @@ export default async function PatientsPage() {
           <p className="page-sub">
             {pending
               ? 'Tenant provisioning…'
-              : `${rows.length} patient${rows.length === 1 ? '' : 's'} loaded from CSV imports.`}
+              : `${rows.length} patient${rows.length === 1 ? '' : 's'} loaded.`}
           </p>
         </div>
         <div className="page-actions">
@@ -45,6 +44,7 @@ export default async function PatientsPage() {
             Export
           </button>
           <UploadCsvButton />
+          <AddPatientButton />
         </div>
       </div>
 
@@ -57,56 +57,7 @@ export default async function PatientsPage() {
         <Tab label="Opted out" count={counts.opted_out ?? 0} />
       </div>
 
-      <div className="card">
-        {rows.length === 0 ? (
-          <div className="empty">
-            <div className="empty-title">No patients yet</div>
-            <div>Upload a CSV of lapsed patients to begin a reactivation sequence.</div>
-          </div>
-        ) : (
-          <div className="table-wrap">
-            <table className="table">
-              <thead>
-                <tr>
-                  <th>Name</th>
-                  <th>Phone</th>
-                  <th>Last visit</th>
-                  <th>Last service</th>
-                  <th>Track</th>
-                  <th>Status</th>
-                  <th>Source</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((p) => (
-                  <tr key={p.id}>
-                    <td>
-                      <div className="cell-stack">
-                        <span className="primary">{fullName(p)}</span>
-                        {p.email && <span className="secondary">{p.email}</span>}
-                      </div>
-                    </td>
-                    <td className="num">{p.phone ?? <span className="muted">—</span>}</td>
-                    <td>{p.lastVisitDate ?? <span className="muted">—</span>}</td>
-                    <td>{p.lastService ?? <span className="muted">—</span>}</td>
-                    <td>
-                      <TrackChip track={p.sequenceTrack} />
-                    </td>
-                    <td>
-                      <StatusChip status={p.status} />
-                    </td>
-                    <td>
-                      <span className="chip" style={{ textTransform: 'capitalize' }}>
-                        {p.source}
-                      </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
+      <PatientsTable rows={rows} />
     </>
   );
 }
@@ -118,11 +69,6 @@ function Tab({ label, count, active }: { label: string; count: number; active?: 
       <span className="count">{count}</span>
     </div>
   );
-}
-
-function fullName(p: typeof patients.$inferSelect): string {
-  const parts = [p.firstName, p.lastName].filter(Boolean);
-  return parts.length > 0 ? parts.join(' ') : 'Unnamed patient';
 }
 
 function countByStatus(rows: (typeof patients.$inferSelect)[]) {

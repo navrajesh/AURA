@@ -192,6 +192,13 @@ export const IconCalendar = (p: IconProps) => (
     <line x1="3" y1="10" x2="21" y2="10" />
   </Wrap>
 );
+export const IconTrash = (p: IconProps) => (
+  <Wrap {...p}>
+    <path d="M3 6h18" />
+    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6" />
+    <path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+  </Wrap>
+);
 export const IconSun = (p: IconProps) => (
   <Wrap {...p}>
     <circle cx="12" cy="12" r="4" />
