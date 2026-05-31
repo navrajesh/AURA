@@ -968,18 +968,15 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
 .avatar-sm { width: 22px; height: 22px; font-size: 10px; }
 
 /* ============= CLERK OVERRIDES ============= */
-/* Sidebar header: "Account" title + "Manage your account info." subtitle */
-.cl-profilePage .cl-breadcrumbs,
-.cl-breadcrumbsItem,
-.cl-breadcrumbsItem__currentPage,
-[class*="cl-breadcrumb"] { color: var(--text) !important; }
-
-.cl-navbarSection > *:first-child,
-[class*="cl-navbarSection__title"],
-[class*="cl-navbarSection__subtitle"] { color: var(--text-2) !important; }
-
-/* Email address value and all profile row values */
-[class*="cl-profileSectionItem"] span,
-[class*="cl-profileSectionItem"] p,
-[class*="cl-formattedDate"],
-.cl-profileSectionItem__value { color: var(--text-2) !important; }
+/* "Account" sidebar title */
+[data-localization-key="userProfile.navbar.title"] {
+  color: var(--text) !important;
+}
+/* "Manage your account info." sidebar subtitle */
+[data-localization-key="userProfile.navbar.description"] {
+  color: var(--text-2) !important;
+}
+/* Email address value and other profile row values with inherited color */
+[data-color="inherit"][data-variant="body"] {
+  color: var(--text-2) !important;
+}
