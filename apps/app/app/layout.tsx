@@ -27,7 +27,7 @@ export const metadata: Metadata = {
 const clerkAppearance = {
   variables: {
     colorBackground: '#0D1422',
-    colorInputBackground: '#131B2B',
+    colorInputBackground: '#0D1422',
     colorPrimary: '#C9A84C',
     colorText: '#FAF9F5',
     colorTextSecondary: '#AEAAA4',
@@ -37,6 +37,50 @@ const clerkAppearance = {
     colorSuccess: '#38A86B',
     borderRadius: '6px',
     fontFamily: 'var(--font-geist), ui-sans-serif, system-ui, sans-serif',
+  },
+  elements: {
+    card: {
+      backgroundColor: '#131B2B',
+      border: '1px solid #253044',
+      boxShadow: '0 24px 60px -16px rgba(0,0,0,0.8)',
+    },
+    formFieldInput: {
+      backgroundColor: '#0D1422',
+      borderColor: '#253044',
+      color: '#FAF9F5',
+    },
+    formFieldLabel: {
+      color: '#D6D2CA',
+    },
+    socialButtonsBlockButton: {
+      backgroundColor: '#1C2637',
+      borderColor: '#253044',
+      color: '#FAF9F5',
+    },
+    socialButtonsBlockButtonText: {
+      color: '#FAF9F5',
+    },
+    dividerLine: {
+      backgroundColor: '#253044',
+    },
+    dividerText: {
+      color: '#6E6A64',
+    },
+    headerTitle: {
+      color: '#FAF9F5',
+    },
+    headerSubtitle: {
+      color: '#AEAAA4',
+    },
+    footerActionLink: {
+      color: '#C9A84C',
+    },
+    identityPreviewText: {
+      color: '#FAF9F5',
+    },
+    identityPreviewEditButton: {
+      color: '#C9A84C',
+    },
   },
 };
 
