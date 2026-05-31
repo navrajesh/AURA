@@ -84,6 +84,53 @@ const clerkAppearance = {
     identityPreviewEditButton: {
       color: '#C9A84C',
     },
+    // UserProfile modal
+    modalContent: {
+      backgroundColor: '#0D1422',
+    },
+    navbar: {
+      backgroundColor: '#131B2B',
+      borderColor: '#253044',
+    },
+    navbarButton: {
+      color: '#D6D2CA',
+    },
+    navbarButtonIcon: {
+      color: '#AEAAA4',
+    },
+    pageScrollBox: {
+      backgroundColor: '#131B2B',
+    },
+    profileSectionTitle: {
+      borderColor: '#253044',
+    },
+    profileSectionTitleText: {
+      color: '#FAF9F5',
+    },
+    profileSectionContent: {
+      color: '#D6D2CA',
+    },
+    profileSectionPrimaryButton: {
+      color: '#C9A84C',
+    },
+    userPreviewMainIdentifier: {
+      color: '#FAF9F5',
+    },
+    userPreviewSecondaryIdentifier: {
+      color: '#AEAAA4',
+    },
+    badge: {
+      backgroundColor: '#1C2637',
+      borderColor: '#253044',
+      color: '#D6D2CA',
+    },
+    menuList: {
+      backgroundColor: '#131B2B',
+      borderColor: '#253044',
+    },
+    menuItem: {
+      color: '#D6D2CA',
+    },
   },
 };
 
