@@ -72,6 +72,9 @@ const clerkAppearance = {
     headerSubtitle: {
       color: '#AEAAA4',
     },
+    footerActionText: {
+      color: '#D6D2CA',
+    },
     footerActionLink: {
       color: '#C9A84C',
     },
