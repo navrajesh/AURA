@@ -513,6 +513,15 @@ input, select, textarea { font-family: inherit; color: inherit; }
 .chip.accent { background: var(--accent-soft); color: var(--accent-strong); border-color: transparent; }
 .chip.accent .chip-dot { background: var(--accent); }
 [data-theme="dark"] .chip.accent { color: var(--accent); }
+[data-theme="dark"] .btn-primary {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: var(--accent);
+}
+[data-theme="dark"] .btn-primary:hover {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+}
 
 /* track chips */
 .track-chip {
