@@ -31,7 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <head>
           <script
             dangerouslySetInnerHTML={{
-              __html: `(function(){var t=localStorage.getItem('aura-theme');if(t==='dark'||(t===null&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.dataset.theme='dark'}})()`,
+              __html: `(function(){var t=localStorage.getItem('aura-theme');if(t!=='light'){document.documentElement.dataset.theme='dark'}})()`,
             }}
           />
         </head>
