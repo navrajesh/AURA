@@ -95,8 +95,17 @@ const clerkAppearance = {
     navbarButton: {
       color: '#D6D2CA',
     },
+    navbarButtonText: {
+      color: '#D6D2CA',
+    },
     navbarButtonIcon: {
       color: '#AEAAA4',
+    },
+    pageHeader: {
+      color: '#FAF9F5',
+    },
+    pageHeaderText: {
+      color: '#FAF9F5',
     },
     pageScrollBox: {
       backgroundColor: '#131B2B',
@@ -108,6 +117,9 @@ const clerkAppearance = {
       color: '#FAF9F5',
     },
     profileSectionContent: {
+      color: '#D6D2CA',
+    },
+    profileSectionItemValue: {
       color: '#D6D2CA',
     },
     profileSectionPrimaryButton: {
