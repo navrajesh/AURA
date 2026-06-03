@@ -160,13 +160,13 @@ export function UploadCsvModal({ onClose }: { onClose: () => void }) {
                     onClick={() => setDisclosureOpen((o) => !o)}
                     style={disclosureToggle}
                   >
-                    <IconChevDown
-                      size={11}
-                      style={{
-                        transform: disclosureOpen ? 'rotate(180deg)' : 'none',
-                        transition: 'transform 0.15s',
-                      }}
-                    />
+                    <span style={{
+                      display: 'inline-flex',
+                      transform: disclosureOpen ? 'rotate(180deg)' : 'none',
+                      transition: 'transform 0.15s',
+                    }}>
+                      <IconChevDown size={11} />
+                    </span>
                     What does this mean?
                   </button>
 
