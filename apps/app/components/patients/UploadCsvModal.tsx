@@ -3,7 +3,7 @@
 import { useRouter } from 'next/navigation';
 import { useRef, useState } from 'react';
 
-import { IconDownload, IconUpload, IconX } from '@/components/portal/Icons';
+import { IconChevDown, IconDownload, IconUpload, IconX } from '@/components/portal/Icons';
 
 type ImportSummary = {
   importId: string;
@@ -22,9 +22,12 @@ export function UploadCsvModal({ onClose }: { onClose: () => void }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<ImportSummary | null>(null);
+  const [consented, setConsented] = useState(false);
+  const [disclosureOpen, setDisclosureOpen] = useState(false);
 
   function pickFile(f: File | undefined) {
     setError(null);
+    setConsented(false);
     if (!f) return;
     if (!/\.csv$/i.test(f.name) && f.type !== 'text/csv') {
       setError('Pick a .csv file.');
@@ -38,7 +41,7 @@ export function UploadCsvModal({ onClose }: { onClose: () => void }) {
   }
 
   async function submit() {
-    if (!file) return;
+    if (!file || !consented) return;
     setUploading(true);
     setError(null);
     try {
@@ -87,16 +90,9 @@ export function UploadCsvModal({ onClose }: { onClose: () => void }) {
           {!result && (
             <>
               <div
-                onDragOver={(e) => {
-                  e.preventDefault();
-                  setDragOver(true);
-                }}
+                onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
-                onDrop={(e) => {
-                  e.preventDefault();
-                  setDragOver(false);
-                  pickFile(e.dataTransfer.files[0]);
-                }}
+                onDrop={(e) => { e.preventDefault(); setDragOver(false); pickFile(e.dataTransfer.files[0]); }}
                 onClick={() => inputRef.current?.click()}
                 style={{
                   border: `2px dashed ${dragOver ? 'var(--accent)' : 'var(--border-strong)'}`,
@@ -140,6 +136,57 @@ export function UploadCsvModal({ onClose }: { onClose: () => void }) {
                 <IconDownload size={12} /> Download template CSV
               </a>
 
+              {/* Consent block — only shown after file is selected */}
+              {file && (
+                <div style={consentBox}>
+                  <label style={consentLabel}>
+                    <input
+                      type="checkbox"
+                      checked={consented}
+                      onChange={(e) => setConsented(e.target.checked)}
+                      style={{ marginTop: 2, flexShrink: 0, accentColor: 'var(--accent)' }}
+                    />
+                    <span style={{ fontSize: 13, color: 'var(--text-2)', lineHeight: 1.55 }}>
+                      By uploading this list, I confirm that these contacts have given me
+                      permission to contact them, and I agree to AURA Invites'{' '}
+                      <a href="#" style={policyLink}>Acceptable Use Policy</a>
+                      {' '}and{' '}
+                      <a href="#" style={policyLink}>Privacy Policy</a>.
+                    </span>
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => setDisclosureOpen((o) => !o)}
+                    style={disclosureToggle}
+                  >
+                    <IconChevDown
+                      size={11}
+                      style={{
+                        transform: disclosureOpen ? 'rotate(180deg)' : 'none',
+                        transition: 'transform 0.15s',
+                      }}
+                    />
+                    What does this mean?
+                  </button>
+
+                  {disclosureOpen && (
+                    <div style={disclosurePanel}>
+                      <p style={{ fontWeight: 600, fontSize: 12, margin: '0 0 8px', color: 'var(--text)' }}>
+                        A note about your contacts
+                      </p>
+                      <ul style={{ margin: 0, paddingLeft: 16, display: 'flex', flexDirection: 'column', gap: 5 }}>
+                        {DISCLOSURE_ITEMS.map((item, i) => (
+                          <li key={i} style={{ fontSize: 12, color: 'var(--text-2)', lineHeight: 1.5 }}>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+
               {error && (
                 <div className="chip danger" style={{ alignSelf: 'flex-start' }}>
                   <span className="chip-dot" />
@@ -154,7 +201,7 @@ export function UploadCsvModal({ onClose }: { onClose: () => void }) {
                 <button
                   className="btn btn-accent"
                   type="button"
-                  disabled={!file || uploading}
+                  disabled={!file || !consented || uploading}
                   onClick={submit}
                 >
                   {uploading ? 'Importing…' : 'Upload'}
@@ -181,27 +228,13 @@ export function UploadCsvModal({ onClose }: { onClose: () => void }) {
                   <summary style={{ cursor: 'pointer', fontSize: 13, fontWeight: 500 }}>
                     {result.errors.length} skipped rows
                   </summary>
-                  <ul
-                    style={{
-                      margin: '8px 0 0',
-                      paddingLeft: 18,
-                      fontSize: 12,
-                      color: 'var(--muted)',
-                    }}
-                  >
+                  <ul style={{ margin: '8px 0 0', paddingLeft: 18, fontSize: 12, color: 'var(--muted)' }}>
                     {result.errors.slice(0, 10).map((e, i) => (
-                      <li key={i}>
-                        Row {e.rowIndex}: {e.reason}
-                      </li>
+                      <li key={i}>Row {e.rowIndex}: {e.reason}</li>
                     ))}
                     {result.errors.length > 10 && <li>… and {result.errors.length - 10} more</li>}
                   </ul>
-                  <button
-                    type="button"
-                    className="btn btn-sm"
-                    style={{ marginTop: 8 }}
-                    onClick={downloadErrorReport}
-                  >
+                  <button type="button" className="btn btn-sm" style={{ marginTop: 8 }} onClick={downloadErrorReport}>
                     <IconDownload size={12} /> Download full error report
                   </button>
                 </details>
@@ -220,6 +253,14 @@ export function UploadCsvModal({ onClose }: { onClose: () => void }) {
   );
 }
 
+const DISCLOSURE_ITEMS = [
+  'You have a prior relationship with each contact on this list, or have otherwise obtained their consent to receive event invitations and promotional communications from you and AURA Invites.',
+  'Your list was not purchased, rented, or scraped from a third-party source.',
+  'Each contact is a US resident aged 18 or older, or you have verified that minors have appropriate parental consent where required.',
+  'Contacts on this list may receive event invitations and marketing communications sent jointly by you and AURA Invites. They will always have the ability to unsubscribe at any time.',
+  'AURA Invites reserves the right to suspend accounts that upload lists in violation of these terms. For more information, see our Privacy Policy and Acceptable Use Policy.',
+];
+
 const backdrop: React.CSSProperties = {
   position: 'fixed',
   inset: 0,
@@ -235,4 +276,47 @@ const modal: React.CSSProperties = {
   maxWidth: 540,
   background: 'var(--panel)',
   boxShadow: 'var(--shadow-lg)',
+};
+
+const consentBox: React.CSSProperties = {
+  background: 'var(--panel-2)',
+  border: '1px solid var(--border)',
+  borderRadius: 'var(--radius)',
+  padding: '12px 14px',
+  display: 'flex',
+  flexDirection: 'column',
+  gap: 8,
+};
+
+const consentLabel: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'flex-start',
+  gap: 10,
+  cursor: 'pointer',
+};
+
+const policyLink: React.CSSProperties = {
+  color: 'var(--accent)',
+  textDecoration: 'underline',
+  textUnderlineOffset: 2,
+};
+
+const disclosureToggle: React.CSSProperties = {
+  display: 'inline-flex',
+  alignItems: 'center',
+  gap: 4,
+  background: 'none',
+  border: 'none',
+  padding: 0,
+  cursor: 'pointer',
+  fontSize: 12,
+  color: 'var(--muted)',
+  alignSelf: 'flex-start',
+};
+
+const disclosurePanel: React.CSSProperties = {
+  background: 'var(--panel)',
+  border: '1px solid var(--border)',
+  borderRadius: 'var(--radius)',
+  padding: '12px 14px',
 };
