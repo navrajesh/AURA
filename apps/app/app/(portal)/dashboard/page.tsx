@@ -1,13 +1,37 @@
 import { currentUser } from '@clerk/nextjs/server';
+import { sql } from 'drizzle-orm';
 
-import { IconArrowUp, IconExternalNoop } from './_widgets';
+import { patients, withTenant } from '@aura/db';
+
+import { IconArrowUp, IconExternalNoop, RevenueHero } from './_widgets';
 import { Sparkline } from '@/components/portal/Sparkline';
+import { getDb } from '@/lib/db';
+import { requireCurrentContext, TenantNotReadyError } from '@/lib/tenant';
+
+export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
   const user = await currentUser();
   const greeting = user?.firstName ?? user?.username ?? 'there';
 
-  // Static placeholder data — gets replaced with real queries in v1.x.
+  let revenueData = { totalRevenueCents: 0, convertedCount: 0, totalPatients: 0 };
+  try {
+    const ctx = await requireCurrentContext();
+    const [stats] = await withTenant(getDb(), ctx.tenantId, (tx) =>
+      tx
+        .select({
+          totalRevenueCents: sql<number>`coalesce(sum(${patients.estimatedRevenueCents}) filter (where ${patients.converted} = true), 0)::int`,
+          convertedCount: sql<number>`count(*) filter (where ${patients.converted} = true)`,
+          totalPatients: sql<number>`count(*)`,
+        })
+        .from(patients),
+    );
+    if (stats) revenueData = stats;
+  } catch (err) {
+    if (!(err instanceof TenantNotReadyError)) throw err;
+  }
+
+  // Static placeholder KPIs — replaced with real queries when sequence engine is live.
   const kpis = [
     { label: 'Active patients', value: '0', trend: '—', spark: [1, 1, 1, 1, 1] },
     { label: 'Messages sent (7d)', value: '0', trend: '—', spark: [1, 1, 1, 1, 1] },
@@ -42,6 +66,12 @@ export default async function DashboardPage() {
           </button>
         </div>
       </div>
+
+      <RevenueHero
+        totalRevenueCents={revenueData.totalRevenueCents}
+        convertedCount={revenueData.convertedCount}
+        totalPatients={revenueData.totalPatients}
+      />
 
       <div className="kpi-grid">
         {kpis.map((k) => (
