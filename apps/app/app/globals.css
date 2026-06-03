@@ -1107,7 +1107,13 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   flex-shrink: 0;
 }
 
-/* Toast spawned by ModuleStrip locked-module click */
+/* Toast spawned by ModuleStrip locked-module click.
+   Uses its own keyframe — the shared fadeIn ends with transform:none which
+   would cancel the translateX(-50%) centering on this element. */
+@keyframes moduleToastIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
 .module-toast {
   position: fixed;
   bottom: 24px;
@@ -1119,8 +1125,8 @@ hr.div { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
   padding: 9px 16px;
   border-radius: var(--radius);
   box-shadow: var(--shadow-md);
-  z-index: 200;
+  z-index: 9999;
   pointer-events: none;
   white-space: nowrap;
-  animation: fadeIn 200ms ease-out both;
+  animation: moduleToastIn 150ms ease-out;
 }

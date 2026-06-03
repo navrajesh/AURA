@@ -1,6 +1,7 @@
 'use client';
 
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import { IconHeadset, IconLayout, IconLock, IconRefresh, IconSparkle } from './Icons';
 
@@ -55,7 +56,10 @@ const MODULES: Mod[] = [
 
 export function ModuleStrip() {
   const [toastMsg, setToastMsg] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => { setMounted(true); }, []);
 
   function showToast(msg: string) {
     setToastMsg(msg);
@@ -83,10 +87,11 @@ export function ModuleStrip() {
         )}
       </div>
 
-      {toastMsg && (
+      {mounted && toastMsg && createPortal(
         <div className="module-toast" role="status" aria-live="polite">
           {toastMsg}
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );
