@@ -47,6 +47,7 @@ export function SidebarNav() {
   return (
     <>
       <div className="nav-section">
+        <div className="nav-label">Reactivation · Workspace</div>
         {primary.map((item) => (
           <Link
             key={item.href}

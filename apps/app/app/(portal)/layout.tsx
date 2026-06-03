@@ -2,6 +2,7 @@ import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
 import { Brand } from '@/components/portal/Brand';
+import { ModuleStrip } from '@/components/portal/ModuleStrip';
 import { SidebarFooter } from '@/components/portal/SidebarFooter';
 import { SidebarNav } from '@/components/portal/Sidebar';
 import { TenantBadge } from '@/components/portal/TenantBadge';
@@ -29,6 +30,8 @@ export default async function PortalLayout({ children }: { children: React.React
       <aside className="sidebar">
         <Brand />
         <TenantBadge short={tenantShort} name={tenantName} tier="Med spa" />
+        <ModuleStrip />
+        <div className="sidebar-rule" />
         <SidebarNav />
         <SidebarFooter />
       </aside>
