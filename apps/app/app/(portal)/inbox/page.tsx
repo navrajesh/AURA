@@ -2,11 +2,14 @@ import { ConversationList } from '@/components/inbox/ConversationList';
 import { Composer } from '@/components/inbox/Composer';
 import { InboxRealtime } from '@/components/inbox/InboxRealtime';
 import { MessageBubble } from '@/components/inbox/MessageBubble';
+import { NewConversationButton } from '@/components/inbox/NewConversationButton';
 import { StatusChip } from '@/components/portal/StatusChip';
 import { getTwilioConfig } from '@/lib/env';
 import {
+  type EligiblePatient,
   getThread,
   listConversations,
+  listEligiblePatients,
   markConversationRead,
   type ConversationListItem,
 } from '@/lib/services/conversations';
@@ -25,11 +28,13 @@ export default async function InboxPage({
 
   let items: ConversationListItem[] = [];
   let active: Awaited<ReturnType<typeof getThread>> = null;
+  let eligiblePatients: EligiblePatient[] = [];
   let tenantPending = false;
 
   try {
     const ctx = await requireCurrentContext();
     items = await listConversations(ctx.tenantId);
+    eligiblePatients = await listEligiblePatients(ctx.tenantId);
     if (activeId) {
       active = await getThread(ctx.tenantId, activeId);
       if (active && active.conversation.unreadCount > 0) {
@@ -55,12 +60,19 @@ export default async function InboxPage({
               : `${items.length} conversation${items.length === 1 ? '' : 's'}`}
           </p>
         </div>
-        {!twilio.configured && (
-          <div className="chip warning">
-            <span className="chip-dot" />
-            Twilio not configured
-          </div>
-        )}
+        <div className="page-actions">
+          {!twilio.configured && (
+            <div className="chip warning">
+              <span className="chip-dot" />
+              Twilio not configured
+            </div>
+          )}
+          <NewConversationButton
+            patients={eligiblePatients}
+            disabled={!twilio.configured}
+            disabledReason="Twilio not configured — set TWILIO_* env vars to enable sending"
+          />
+        </div>
       </div>
 
       <div className="inbox-grid">

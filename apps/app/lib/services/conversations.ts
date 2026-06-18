@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { and, asc, desc, eq, sql } from 'drizzle-orm';
+import { and, asc, desc, eq, isNotNull, sql } from 'drizzle-orm';
 
 import {
   conversations,
@@ -105,6 +105,55 @@ export async function getThread(
       patient,
       messages: msgs,
     };
+  });
+}
+
+export type EligiblePatient = { id: string; name: string; phone: string };
+
+/** Patients that can be messaged: have a phone number, not opted out. */
+export async function listEligiblePatients(tenantId: string): Promise<EligiblePatient[]> {
+  return await withTenant(getDb(), tenantId, async (tx) => {
+    const rows = await tx
+      .select({
+        id: patients.id,
+        firstName: patients.firstName,
+        lastName: patients.lastName,
+        phone: patients.phone,
+      })
+      .from(patients)
+      .where(and(eq(patients.optedOut, false), isNotNull(patients.phone)))
+      .orderBy(patients.firstName)
+      .limit(500);
+
+    return rows.map((r) => ({
+      id: r.id,
+      name: [r.firstName, r.lastName].filter(Boolean).join(' ') || r.phone!,
+      phone: r.phone!,
+    }));
+  });
+}
+
+/** Finds the existing conversation for a patient, or creates one. One conversation per (tenant, patient). */
+export async function findOrCreateConversation(
+  tenantId: string,
+  patientId: string,
+): Promise<string> {
+  return await withTenant(getDb(), tenantId, async (tx) => {
+    const existing = (
+      await tx
+        .select({ id: conversations.id })
+        .from(conversations)
+        .where(and(eq(conversations.tenantId, tenantId), eq(conversations.patientId, patientId)))
+        .limit(1)
+    )[0];
+    if (existing) return existing.id;
+
+    const [created] = await tx
+      .insert(conversations)
+      .values({ tenantId, patientId })
+      .returning({ id: conversations.id });
+    if (!created) throw new Error('Failed to create conversation');
+    return created.id;
   });
 }
 
