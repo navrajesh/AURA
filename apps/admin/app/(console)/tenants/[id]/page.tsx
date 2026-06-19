@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 
 import { csvImports, db, messages, patients, tenants } from '@/lib/db';
 import { logAdminAction } from '@/lib/audit';
+import { formatTimestamp } from '@/lib/format';
 import { AssignTwilioButton } from './AssignTwilioButton';
 import { DeleteTenantButton } from './DeleteTenantButton';
 import { SuspendTenantButton } from './SuspendTenantButton';
@@ -112,7 +113,7 @@ export default async function TenantDetailPage({
               {recentMessages.map((m) => (
                 <tr key={m.id}>
                   <td className="mono" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
-                    {new Date(m.createdAt).toLocaleString()}
+                    {formatTimestamp(m.createdAt)}
                   </td>
                   <td>{m.direction}</td>
                   <td>{m.channel}</td>

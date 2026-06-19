@@ -1,3 +1,5 @@
+'use client';
+
 import type { Message } from '@aura/db';
 
 export function MessageBubble({ message }: { message: Message }) {

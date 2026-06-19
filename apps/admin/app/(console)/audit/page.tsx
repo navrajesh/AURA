@@ -2,6 +2,7 @@ import { desc, eq } from 'drizzle-orm';
 
 import { adminAuditLog, adminUsers, db, tenants } from '@/lib/db';
 import { logAdminAction } from '@/lib/audit';
+import { formatTimestamp } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
 
@@ -52,7 +53,7 @@ export default async function AuditPage() {
               {rows.map((r) => (
                 <tr key={r.id}>
                   <td className="mono" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
-                    {new Date(r.createdAt).toLocaleString()}
+                    {formatTimestamp(r.createdAt)}
                   </td>
                   <td>{r.adminEmail}</td>
                   <td>
