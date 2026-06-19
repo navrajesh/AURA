@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { csvImports, db, messages, patients, tenants } from '@/lib/db';
 import { logAdminAction } from '@/lib/audit';
+import { AssignTwilioButton } from './AssignTwilioButton';
 import { DeleteTenantButton } from './DeleteTenantButton';
 
 export const dynamic = 'force-dynamic';
@@ -61,7 +62,12 @@ export default async function TenantDetailPage({
         <Kpi label="Patients" value={pc!.n} />
         <Kpi label="Messages" value={mc!.n} />
         <Kpi label="CSV imports" value={ic!.n} />
-        <Kpi label="Twilio number" value={tenant.twilioFromNumber ?? '—'} mono />
+        <div className="kpi">
+          <div className="kpi-label">Twilio number</div>
+          <div className="kpi-value" style={{ fontSize: 16 }}>
+            <AssignTwilioButton tenantId={tenant.id} currentNumber={tenant.twilioFromNumber} />
+          </div>
+        </div>
       </div>
 
       <div className="card" style={{ marginTop: 12 }}>
