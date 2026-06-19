@@ -16,7 +16,9 @@ export type AuditAction =
   | 'impersonate_end'
   | 'export'
   | 'delete_tenant'
-  | 'assign_twilio_number';
+  | 'assign_twilio_number'
+  | 'suspend_tenant'
+  | 'reactivate_tenant';
 
 export type AuditOptions = {
   action: AuditAction;

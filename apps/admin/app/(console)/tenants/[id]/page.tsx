@@ -1,10 +1,12 @@
 import { count, desc, eq } from 'drizzle-orm';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 import { csvImports, db, messages, patients, tenants } from '@/lib/db';
 import { logAdminAction } from '@/lib/audit';
 import { AssignTwilioButton } from './AssignTwilioButton';
 import { DeleteTenantButton } from './DeleteTenantButton';
+import { SuspendTenantButton } from './SuspendTenantButton';
 
 export const dynamic = 'force-dynamic';
 
@@ -54,6 +56,25 @@ export default async function TenantDetailPage({
           <span className={`chip ${tenant.status === 'active' ? 'success' : 'danger'}`}>
             {tenant.status}
           </span>
+          <Link
+            href={`/tenants/${tenant.id}/view`}
+            style={{
+              padding: '6px 14px',
+              background: 'var(--accent)',
+              color: 'var(--bg)',
+              borderRadius: 6,
+              fontWeight: 600,
+              fontSize: 13,
+              textDecoration: 'none',
+            }}
+          >
+            View as tenant
+          </Link>
+          <SuspendTenantButton
+            tenantId={tenant.id}
+            tenantName={tenant.name}
+            status={tenant.status}
+          />
           <DeleteTenantButton tenantId={tenant.id} tenantName={tenant.name} />
         </div>
       </div>

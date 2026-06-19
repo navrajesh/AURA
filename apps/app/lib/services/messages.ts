@@ -23,7 +23,12 @@ import { getTwilioClient } from '@/lib/twilio/client';
 
 export class SendError extends Error {
   constructor(
-    public readonly code: 'OPTED_OUT' | 'NO_PHONE' | 'TENANT_NOT_CONFIGURED' | 'PATIENT_NOT_FOUND',
+    public readonly code:
+      | 'OPTED_OUT'
+      | 'NO_PHONE'
+      | 'TENANT_NOT_CONFIGURED'
+      | 'TENANT_SUSPENDED'
+      | 'PATIENT_NOT_FOUND',
     message: string,
   ) {
     super(message);
@@ -45,6 +50,9 @@ export async function sendSms(args: {
     const tenantRow = (
       await tx.select().from(tenants).where(eq(tenants.id, args.tenantId)).limit(1)
     )[0];
+    if (tenantRow?.status === 'suspended') {
+      throw new SendError('TENANT_SUSPENDED', 'Tenant is suspended — sending is disabled');
+    }
     if (!tenantRow?.twilioFromNumber) {
       throw new SendError('TENANT_NOT_CONFIGURED', 'Tenant has no Twilio number assigned');
     }

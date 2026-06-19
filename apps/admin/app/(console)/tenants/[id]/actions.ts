@@ -55,6 +55,33 @@ export async function assignTwilioNumber(
   return { ok: true };
 }
 
+export type SetTenantStatusResult = { ok: true } | { ok: false; message: string };
+
+export async function setTenantStatus(
+  tenantId: string,
+  status: 'active' | 'suspended',
+): Promise<SetTenantStatusResult> {
+  const updated = (
+    await db
+      .update(tenants)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(tenants.id, tenantId))
+      .returning({ id: tenants.id, name: tenants.name })
+  )[0];
+  if (!updated) {
+    return { ok: false, message: 'Tenant not found.' };
+  }
+
+  await logAdminAction({
+    action: status === 'suspended' ? 'suspend_tenant' : 'reactivate_tenant',
+    tenantIdAccessed: tenantId,
+    resource: 'tenant',
+    resourceId: tenantId,
+  });
+
+  return { ok: true };
+}
+
 export async function deleteTenant(tenantId: string, tenantName: string) {
   // Null out audit log FK references — tenantIdAccessed has no ON DELETE CASCADE.
   await db
@@ -71,4 +98,14 @@ export async function deleteTenant(tenantId: string, tenantName: string) {
   });
 
   redirect(`/tenants?deleted=${encodeURIComponent(tenantName)}`);
+}
+
+export async function endTenantView(tenantId: string) {
+  await logAdminAction({
+    action: 'impersonate_end',
+    tenantIdAccessed: tenantId,
+    resource: 'tenant',
+    resourceId: tenantId,
+  });
+  redirect(`/tenants/${tenantId}`);
 }
