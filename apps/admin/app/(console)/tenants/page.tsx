@@ -4,7 +4,7 @@ import { Suspense } from 'react';
 
 import { csvImports, db, messages, patients, tenants } from '@/lib/db';
 import { logAdminAction } from '@/lib/audit';
-import { formatDate } from '@/lib/format';
+import { Timestamp } from '@/components/Timestamp';
 
 import { DeletedToastBridge } from './DeletedToastBridge';
 
@@ -88,7 +88,7 @@ export default async function TenantsPage() {
                     {t.importCount}
                   </td>
                   <td className="mono" style={{ fontSize: 12, color: 'var(--muted)' }}>
-                    {formatDate(t.createdAt)}
+                    <Timestamp value={t.createdAt} dateOnly />
                   </td>
                 </tr>
               ))}

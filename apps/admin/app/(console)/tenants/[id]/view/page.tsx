@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { conversations, csvImports, db, patients, tenants } from '@/lib/db';
 import { logAdminAction } from '@/lib/audit';
-import { formatDate, formatTimestamp } from '@/lib/format';
+import { Timestamp } from '@/components/Timestamp';
 
 import { EndViewButton } from './EndViewButton';
 
@@ -129,7 +129,7 @@ export default async function TenantViewPage({
                     {c.patientPhone ?? '—'}
                   </td>
                   <td className="mono" style={{ fontSize: 12, whiteSpace: 'nowrap' }}>
-                    {formatTimestamp(c.lastActivityAt)}
+                    <Timestamp value={c.lastActivityAt} />
                   </td>
                   <td style={{ maxWidth: 320, overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {c.lastMessageDirection === 'outbound' ? 'You: ' : ''}
@@ -180,7 +180,7 @@ export default async function TenantViewPage({
                   </td>
                   <td>{p.source}</td>
                   <td className="mono" style={{ fontSize: 12, color: 'var(--muted)' }}>
-                    {formatDate(p.createdAt)}
+                    <Timestamp value={p.createdAt} dateOnly />
                   </td>
                 </tr>
               ))}
@@ -224,7 +224,7 @@ export default async function TenantViewPage({
                     </span>
                   </td>
                   <td className="mono" style={{ fontSize: 12, color: 'var(--muted)' }}>
-                    {formatTimestamp(i.createdAt)}
+                    <Timestamp value={i.createdAt} />
                   </td>
                 </tr>
               ))}
