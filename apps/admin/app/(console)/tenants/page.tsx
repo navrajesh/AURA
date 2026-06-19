@@ -1,8 +1,11 @@
 import { count, desc, eq, sql } from 'drizzle-orm';
 import Link from 'next/link';
+import { Suspense } from 'react';
 
 import { csvImports, db, messages, patients, tenants } from '@/lib/db';
 import { logAdminAction } from '@/lib/audit';
+
+import { DeletedToastBridge } from './DeletedToastBridge';
 
 export const dynamic = 'force-dynamic';
 
@@ -29,6 +32,9 @@ export default async function TenantsPage() {
 
   return (
     <>
+      <Suspense fallback={null}>
+        <DeletedToastBridge />
+      </Suspense>
       <div className="header-row">
         <div>
           <div className="page-title">Tenants</div>

@@ -70,5 +70,5 @@ export async function deleteTenant(tenantId: string, tenantName: string) {
     metadata: { deletedTenantId: tenantId, deletedTenantName: tenantName },
   });
 
-  redirect('/tenants');
+  redirect(`/tenants?deleted=${encodeURIComponent(tenantName)}`);
 }

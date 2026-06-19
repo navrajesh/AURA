@@ -3,6 +3,8 @@
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 
+import { showToast } from '@/components/Toast';
+
 import { assignTwilioNumber } from './actions';
 
 export function AssignTwilioButton({
@@ -24,6 +26,7 @@ export function AssignTwilioButton({
       const result = await assignTwilioNumber(tenantId, value);
       if (result.ok) {
         setEditing(false);
+        showToast(`Twilio number ${value.trim()} assigned`);
         router.refresh();
       } else {
         setError(result.message);
