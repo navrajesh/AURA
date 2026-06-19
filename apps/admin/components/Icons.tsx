@@ -27,6 +27,15 @@ const Wrap = ({
   </svg>
 );
 
+export const IconDashboard = (p: IconProps) => (
+  <Wrap {...p}>
+    <rect x="3" y="3" width="7" height="9" />
+    <rect x="14" y="3" width="7" height="5" />
+    <rect x="14" y="12" width="7" height="9" />
+    <rect x="3" y="16" width="7" height="5" />
+  </Wrap>
+);
+
 export const IconUsers = (p: IconProps) => (
   <Wrap {...p}>
     <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />

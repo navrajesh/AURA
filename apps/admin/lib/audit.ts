@@ -7,6 +7,7 @@ import { eq, sql } from 'drizzle-orm';
 import { db } from './db';
 
 export type AuditAction =
+  | 'view_dashboard'
   | 'view_tenant_list'
   | 'view_tenant'
   | 'view_patients'

@@ -3,9 +3,10 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-import { IconActivity, IconUsers } from './Icons';
+import { IconActivity, IconDashboard, IconUsers } from './Icons';
 
 const links = [
+  { href: '/dashboard', label: 'Dashboard', Icon: IconDashboard },
   { href: '/tenants', label: 'Tenants', Icon: IconUsers },
   { href: '/audit', label: 'Audit log', Icon: IconActivity },
 ];

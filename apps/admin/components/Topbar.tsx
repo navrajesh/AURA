@@ -3,6 +3,7 @@
 import { usePathname } from 'next/navigation';
 
 const labels: Record<string, string> = {
+  dashboard: 'Dashboard',
   tenants: 'Tenants',
   audit: 'Audit log',
 };
