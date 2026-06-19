@@ -44,6 +44,7 @@ export function AssignTwilioButton({
           style={{
             padding: '2px 10px',
             background: 'transparent',
+            color: 'var(--text)',
             border: '1px solid var(--border, #ccc)',
             borderRadius: 6,
             fontSize: 12,
@@ -110,6 +111,7 @@ export function AssignTwilioButton({
           style={{
             padding: '4px 12px',
             background: 'transparent',
+            color: 'var(--text)',
             border: '1px solid var(--border, #ccc)',
             borderRadius: 6,
             fontSize: 13,
