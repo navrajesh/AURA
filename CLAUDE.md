@@ -31,6 +31,7 @@ These choices live across the codebase and are easy to misread or accidentally r
 |---|---|
 | Full v1 spec, locked-in decisions, §11 criteria | `docs/AURA_Technical_Handover_v1_1.md` |
 | What's verified vs blocked, what's next | `docs/ACCEPTANCE.md`, `docs/NEXT_STEPS.md` |
+| Admin-console-specific roadmap (impersonation, suspend, etc.) | `docs/NEXT_STEPS_ADMIN.md` |
 | Dev setup, Clerk webhook, Twilio handoff | `README.md` |
 | Design tokens, screen markup reference | `design/aura-v1/project/` |
 

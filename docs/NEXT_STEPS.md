@@ -103,3 +103,4 @@ Each spa gets their own accent colour replacing AURA's terracotta `#C75D3C`. All
 - Build spec: [AURA_Technical_Handover_v1_1.md](AURA_Technical_Handover_v1_1.md)
 - §11 acceptance: [ACCEPTANCE.md](ACCEPTANCE.md)
 - Dev runbook: [../README.md](../README.md)
+- Admin-console-specific roadmap: [NEXT_STEPS_ADMIN.md](NEXT_STEPS_ADMIN.md)

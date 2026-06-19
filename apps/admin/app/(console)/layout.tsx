@@ -1,7 +1,8 @@
 import { UserButton } from '@clerk/nextjs';
 import { auth } from '@clerk/nextjs/server';
-import Link from 'next/link';
 import { redirect } from 'next/navigation';
+
+import { SidebarNav } from '@/components/SidebarNav';
 
 export default async function ConsoleLayout({ children }: { children: React.ReactNode }) {
   const { userId } = await auth();
@@ -14,12 +15,7 @@ export default async function ConsoleLayout({ children }: { children: React.Reac
           AURA
           <small>admin console</small>
         </div>
-        <Link href="/tenants" className="nav-link">
-          Tenants
-        </Link>
-        <Link href="/audit" className="nav-link">
-          Audit log
-        </Link>
+        <SidebarNav />
         <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--border)' }}>
           <UserButton />
         </div>
